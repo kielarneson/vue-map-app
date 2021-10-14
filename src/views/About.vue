@@ -16,7 +16,7 @@ body {
 
 <script>
 /* global mapboxgl */
-/* global MapboxGeocoder */
+// /* global MapboxGeocoder */
 
 export default {
   mounted: function () {
@@ -29,24 +29,14 @@ export default {
     });
     console.log(map);
 
-    // Add the control to the map.
-    map.addControl(
-      new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-      })
-    );
-    map.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true,
-        },
-        // When active the map will receive updates to the device's location as it changes.
-        trackUserLocation: true,
-        // Draw an arrow next to the location dot to indicate which direction the device is heading.
-        showUserHeading: true,
-      })
-    );
+    // Create a default Marker and add it to the map.
+    const marker1 = new mapboxgl.Marker().setLngLat([12.554729, 55.70651]).addTo(map);
+
+    // Create a default Marker, colored black, rotated 45 degrees.
+    const marker2 = new mapboxgl.Marker({ color: "black", rotation: 45 }).setLngLat([12.65147, 55.608166]).addTo(map);
+
+    console.log(marker1);
+    console.log(marker2);
   },
 };
 </script>
