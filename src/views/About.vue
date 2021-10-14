@@ -9,6 +9,7 @@ body {
   margin: 0;
   padding: 0;
 }
+
 #map {
   height: 75vh;
 }
@@ -16,27 +17,45 @@ body {
 
 <script>
 /* global mapboxgl */
-// /* global MapboxGeocoder */
+/* global mapboxSdk */
 
 export default {
+  data: function () {
+    return {
+      places: [
+        { lat: -25.363, lng: 131.044, description: "A place in Australia" },
+        { lat: -33.8675, lng: 151.207, description: "The main city!" },
+      ],
+    };
+  },
   mounted: function () {
     mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_API_KEY;
-    const map = new mapboxgl.Map({
-      container: "map", // container ID
-      style: "mapbox://styles/mapbox/streets-v11", // style URL
-      center: [-74.5, 40], // starting position [lng, lat]
-      zoom: 9, // starting zoom
-    });
-    console.log(map);
+    const mapboxClient = mapboxSdk({ accessToken: mapboxgl.accessToken });
+    mapboxClient.geocoding
+      .forwardGeocode({
+        query: "Wellington, New Zealand",
+        autocomplete: false,
+        limit: 1,
+      })
+      .send()
+      .then((response) => {
+        if (!response || !response.body || !response.body.features || !response.body.features.length) {
+          console.error("Invalid response:");
+          console.error(response);
+          return;
+        }
+        const feature = response.body.features[0];
 
-    // Create a default Marker and add it to the map.
-    const marker1 = new mapboxgl.Marker().setLngLat([12.554729, 55.70651]).addTo(map);
+        const map = new mapboxgl.Map({
+          container: "map",
+          style: "mapbox://styles/mapbox/streets-v11",
+          center: feature.center,
+          zoom: 10,
+        });
 
-    // Create a default Marker, colored black, rotated 45 degrees.
-    const marker2 = new mapboxgl.Marker({ color: "black", rotation: 45 }).setLngLat([12.65147, 55.608166]).addTo(map);
-
-    console.log(marker1);
-    console.log(marker2);
+        // Create a marker and add it to the map.
+        new mapboxgl.Marker().setLngLat(feature.center).addTo(map);
+      });
   },
 };
 </script>
