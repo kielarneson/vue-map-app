@@ -1,5 +1,9 @@
 <template>
   <div class="about">
+    <button id="find-me">Show my location</button>
+    <br />
+    <p id="status"></p>
+    <a id="map-link" target="_blank"></a>
     <div id="map"></div>
   </div>
 </template>
@@ -16,14 +20,14 @@ body {
 </style>
 
 <script>
-/* global mapboxgl */
+/* global mapboxgl, MapboxDirections */
 
 export default {
   data: function () {
     return {
       places: [
-        { lat: -25.363, lng: 131.044, description: "A place in Australia" },
-        { lat: -33.8675, lng: 151.207, description: "The main city!" },
+        { lat: 41.8789123, lng: -87.6362009, description: "Sears Tower" },
+        { lat: 41.8987503, lng: -87.6230425, description: "Hancock Building" },
       ],
     };
   },
@@ -32,8 +36,8 @@ export default {
     const map = new mapboxgl.Map({
       container: "map",
       style: "mapbox://styles/mapbox/streets-v11",
-      center: [12.550343, 55.665957],
-      zoom: 8,
+      center: [-87.6249131, 41.8762194],
+      zoom: 12,
     });
 
     console.log(map);
@@ -44,6 +48,16 @@ export default {
       console.log(marker);
     });
 
+    var directions = new MapboxDirections({
+      accessToken: mapboxgl.accessToken,
+    });
+
+    map.addControl(directions, "top-left");
+
+    map.on("load", function () {
+      directions.setOrigin("Soldier Field, Chicago, IL"); // can be address in form setOrigin("12, Elm Street, NY")
+      // directions.setDestinaion([]); // can be address
+    });
     // // Create a default Marker and add it to the map.
     // const marker1 = new mapboxgl.Marker().setLngLat([12.554729, 55.70651]).addTo(map);
 
