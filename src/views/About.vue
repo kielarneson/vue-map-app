@@ -16,6 +16,7 @@ body {
 
 <script>
 /* global mapboxgl */
+/* global MapboxGeocoder */
 
 export default {
   mounted: function () {
@@ -27,6 +28,14 @@ export default {
       zoom: 9, // starting zoom
     });
     console.log(map);
+
+    // Add the control to the map.
+    map.addControl(
+      new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl,
+      })
+    );
   },
 };
 </script>
